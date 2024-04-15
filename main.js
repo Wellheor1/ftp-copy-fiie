@@ -5,7 +5,7 @@ require('dotenv').config()
 
 const localStore = process.env.LOCAL_STORE
 const remoteSourceStore = process.env.FTP_SOURCE_STORE
-const remoteDestinationSotre = process.env.FTP_DESTINATION_STORE
+const remoteDestinationStore = process.env.FTP_DESTINATION_STORE
 
 
 async function start() {
@@ -18,11 +18,12 @@ async function start() {
             password: process.env.FTP_PASSWORD,
             secure: false
         })
-        const privetList = await client.list(remoteSourceStore)
-        if (privetList.length > 0 ) {
-            console.info('Количество файлов ', privetList.length)
+        console.info('Успешное подключение к ', process.env.FTP_HOST)
+        const listFiles = await client.list(remoteSourceStore)
+        if (listFiles.length > 0 ) {
+            console.info('Количество файлов: ', listFiles.length)
             await client.downloadToDir(localStore, remoteSourceStore)
-            await client.uploadFromDir(localStore, remoteDestinationSotre)
+            await client.uploadFromDir(localStore, remoteDestinationStore)
             console.info('Файлы скопированы успешно')
 
             await fs.readdir(localStore, (err, files) => {
