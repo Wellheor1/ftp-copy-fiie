@@ -1,4 +1,10 @@
 const { Client } = require("basic-ftp")
+const fs = require('fs')
+const path = require('path')
+
+const localStore = 'localStore'
+const remoteSourceStore = 'privetOne'
+const remoteDestinationSotre = 'privetTwo'
 
 async function start() {
     const client = new Client()
@@ -10,14 +16,24 @@ async function start() {
             password: "kasian",
             secure: false
         })
-        await client.cd('privetOne')
-        const privetList = await client.list()
+        const privetList = await client.list(remoteSourceStore)
         if (privetList.length > 0 ) {
-            console.log('Каталог не пуст')
-            for (const file of privetList) {
-                await client.downloadTo(`copy_${file.name}`, file.name)
-                await client.uploadFrom(`copy_${file.name}`, `copy_${file.name}` )
-            }
+            console.info('Количество файлов ', privetList.length)
+            await client.downloadToDir(localStore, remoteSourceStore)
+            await client.uploadFromDir(localStore, remoteDestinationSotre)
+            console.info('Файлы скопированы успешно')
+
+            await fs.readdir(localStore, (err, files) => {
+                if (err) throw err
+                for (const file of files) {
+                    fs.unlink(path.join(localStore, file), (err) => {
+                        if (err) throw err
+                    })
+                }
+            })
+            console.info('Локальное хранилище очищено')
+        } else {
+            console.info('Каталог пуст')
         }
     }
     catch(err) {
