@@ -45,4 +45,4 @@ async function start() {
     client.close()
 }
 
-setInterval(() => start(), 10000)
+setInterval(() => start(), process.env.TIMEOUT_RERUN)
