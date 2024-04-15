@@ -1,19 +1,21 @@
 const { Client } = require("basic-ftp")
 const fs = require('fs')
 const path = require('path')
+require('dotenv').config()
 
-const localStore = 'localStore'
-const remoteSourceStore = 'privetOne'
-const remoteDestinationSotre = 'privetTwo'
+const localStore = process.env.LOCAL_STORE
+const remoteSourceStore = process.env.FTP_SOURCE_STORE
+const remoteDestinationSotre = process.env.FTP_DESTINATION_STORE
+
 
 async function start() {
     const client = new Client()
     client.ftp.verbose = false
     try {
         await client.access({
-            host: "151.248.114.64",
-            user: "kasian",
-            password: "kasian",
+            host: process.env.FTP_HOST,
+            user: process.env.FTP_USER,
+            password: process.env.FTP_PASSWORD,
             secure: false
         })
         const privetList = await client.list(remoteSourceStore)
@@ -35,6 +37,7 @@ async function start() {
         } else {
             console.info('Каталог пуст')
         }
+        console.info('Конец')
     }
     catch(err) {
         console.log(err)
@@ -42,5 +45,4 @@ async function start() {
     client.close()
 }
 
-
-start()
+setInterval(() => start(), 10000)
