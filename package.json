@@ -1,0 +1,13 @@
+{
+  "name": "ftp-copy-file",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "Well <Well.heor@yandex.ru>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "basic-ftp": "^5.0.5"
+  }
+}
